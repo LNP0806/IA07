@@ -6,7 +6,7 @@ import App from './App.jsx';
 // PHẢI CHẮC CHẮN IMPORT TỪ '@tanstack/react-query'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthProvider.jsx';
-import "./output.css"
+import "./index.css";
 
 // Tạo React Query Client
 const queryClient = new QueryClient({
