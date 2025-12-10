@@ -11,17 +11,14 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Chú ý: useMutation trong v5 dùng isPending thay vì isLoading
   const loginMutation = useMutation({
     mutationFn: ({ email, password }) => login(email, password),
 
     onSuccess: () => {
-      // Chuyển hướng cứng đến Dashboard sau khi login thành công
       navigate('/dashboard', { replace: true });
     },
 
     onError: (error) => {
-      // Xử lý lỗi từ mock API
       const message = error.response?.data?.message || 'Lỗi đăng nhập không xác định.';
       alert(message);
     }

@@ -5,17 +5,15 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import useAuth from '../context/AuthProvider';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { mockFetchUserProfile } from '../api/mockApi';
-import { useNavigate } from 'react-router-dom'; // Thêm useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const { logout, auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const navigate = useNavigate();
 
-  // Hàm fetch mô phỏng yêu cầu GET đến endpoint được bảo vệ
   const fetchUserProfile = async () => {
-    // Sử dụng mockFetchUserProfile với accessToken hiện tại
     const response = await mockFetchUserProfile(auth.accessToken);
     return response.data;
   };
@@ -27,26 +25,21 @@ const Dashboard = () => {
     refetchOnWindowFocus: false,
     enabled: !!auth.accessToken,
     onError: (err) => {
-      // Xử lý lỗi: nếu Access Token hết hạn (401)
       if (err.response?.status === 401 && !auth.accessToken) {
-        // Interceptor đã xử lý và gọi logout, giờ chỉ cần chuyển hướng
         console.log("Access Token hết hạn và Refresh Token thất bại. Chuyển hướng về Login.");
         navigate('/login', { replace: true });
       } else if (err.response?.status !== 401) {
-        // Lỗi khác không phải do token (ví dụ: lỗi server 500)
         console.error("Lỗi tải profile:", err);
       }
     }
   });
 
-  // Logic Logout
   const handleLogout = () => {
     logout();
-    queryClient.clear(); // Xóa tất cả cache
-    navigate('/login', { replace: true }); // Chuyển hướng đến trang Đăng nhập
+    queryClient.clear();
+    navigate('/login', { replace: true });
   };
 
-  // 1. Trạng thái Tải hoặc Chờ Token
   if (isLoading || !auth.accessToken) {
     return (
       <div className="p-6 bg-white rounded-lg shadow-md max-w-lg mx-auto mt-8 text-center text-gray-600 font-medium">
@@ -55,7 +48,6 @@ const Dashboard = () => {
     );
   }
 
-  // 2. Trạng thái Lỗi Tải Dữ liệu
   if (isError) {
     return (
       <div className="p-6 bg-red-50 border border-red-400 rounded-lg shadow-md max-w-lg mx-auto mt-8 text-center">
@@ -71,7 +63,6 @@ const Dashboard = () => {
     );
   }
 
-  // 3. Trạng thái Thành công
   return (
     <div className="p-8 bg-white rounded-xl shadow-2xl max-w-2xl mx-auto mt-8 border-t-4 border-blue-500">
       <h1 className="text-3xl font-extrabold text-gray-900 mb-4">Chào mừng, {userProfile.name}!</h1>

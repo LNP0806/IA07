@@ -1,21 +1,25 @@
-// src/components/ProtectedRoute.js
-
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../context/AuthProvider.jsx";
 
 const ProtectedRoute = () => {
-  const { auth } = useAuth();
+  const { auth, isCheckingAuth } = useAuth();
   const location = useLocation();
 
-  // Kiểm tra Access Token (hoặc Refresh Token)
-  // Nếu có Access Token (đang trong phiên), cho phép truy cập
-  // Nếu không có Access Token nhưng có Refresh Token, sẽ thử làm mới
-  // Nếu không có cả hai, chuyển hướng đến /login
-  return auth?.accessToken || auth?.refreshToken ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
-  );
+  if (isCheckingAuth) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="p-8 text-center text-gray-600 font-medium bg-white rounded-lg shadow-md border border-gray-200">
+          Đang khôi phục phiên đăng nhập...
+        </div>
+      </div>
+    );
+  }
+
+  if (auth?.accessToken) {
+    return <Outlet />;
+  }
+
+  return <Navigate to="/login" state={{ from: location }} replace />;
 };
 
 export default ProtectedRoute;
