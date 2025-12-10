@@ -34,9 +34,8 @@ function App() {
 
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/" element={<Dashboard />} />
             </Route>
-
+            <Route path="/" element={<LoginPage />} />
             <Route path="*" element={<div className="p-4 text-center text-xl text-red-600">404 Not Found</div>} />
           </Routes>
         </div>
